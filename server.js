@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { JobSource } from "./models/JobSource.js";
 import mongoose from "mongoose";
+import cors from "cors";
 
 dotenv.config();
 
@@ -16,7 +17,9 @@ mongoose.connect(MONGODB_URI, (err) => {
         });
     }
 });
+
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 3044;
 
 app.get("/", (req, res) => {
