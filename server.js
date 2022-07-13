@@ -4,6 +4,13 @@ import { JobSource } from "./models/JobSource.js";
 import mongoose from "mongoose";
 import cors from "cors";
 
+const user = {
+    id: 1,
+    username: "hans",
+    firstName: "Hans",
+    lastName: "Richter",
+};
+
 dotenv.config();
 
 const MONGODB_URI =
@@ -20,6 +27,8 @@ mongoose.connect(MONGODB_URI, (err) => {
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+
 const port = process.env.PORT || 3044;
 
 app.get("/", (req, res) => {
@@ -29,6 +38,20 @@ app.get("/", (req, res) => {
 app.get("/job-sources", async (req, res) => {
     const jobSources = await JobSource.find();
     res.status(200).json(jobSources);
+});
+
+app.post("/login", (req, res) => {
+    // res.status(200).json({"username": "hans"});
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if (username === "hans" && password === "123") {
+        res.json({
+            user,
+        });
+    } else {
+        res.sendStatus(403);
+    }
 });
 
 app.listen(port, () => {
