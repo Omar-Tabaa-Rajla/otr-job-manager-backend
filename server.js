@@ -78,7 +78,28 @@ app.post("/login", async (req, res) => {
         const passwordIsCorrect = await bcrypt.compare(password, user.hash);
         // console.log(password);
         // console.log(user.hash);
-        res.send(passwordIsCorrect);
+        if (passwordIsCorrect) {
+            const frontendUser = {
+                username: user.username,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                accessGroups: user.accessGroups,
+            };
+
+            jwt.sign(
+                { user: frontendUser },
+                "secretkey",
+                { expiresIn: "20s" },
+                (err, token) => {
+                    res.json({
+                        user: frontendUser,
+                        token,
+                    });
+                }
+            );
+        } else {
+            res.status(403).send("not correct");
+        }
     }
     //     if (username === "hans" && password === "123") {
     //         jwt.sign({ user }, "secretkey", { expiresIn: "20s" }, (err, token) => {
